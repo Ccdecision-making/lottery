@@ -4,7 +4,7 @@
 
 ## ✨ 在线体验
 
-👉 [点击这里开始抽奖](https://你的用户名.github.io/lottery/)
+👉 [点击这里开始抽奖](https://Ccdecision-making.github.io/lottery/)
 
 ## 🎯 奖项设置
 
