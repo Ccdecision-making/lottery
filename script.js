@@ -1,31 +1,29 @@
-// 奖品配置 - 玩偶概率更高
+// 奖品配置 - 所有奖品概率相等
 const prizes = [
     {
         detail: '红包 🧧',
-        icon: '🧧',
-        weight: 15  // 15%
+        icon: '🧧'
     },
     {
         detail: '手表 ⌚',
-        icon: '⌚',
-        weight: 15  // 15%
+        icon: '⌚'
     },
     {
         detail: '拍立得 📷',
-        icon: '📷',
-        weight: 15  // 15%
+        icon: '📷'
     },
     {
         detail: '玩偶 🧸',
-        icon: '🧸',
-        weight: 40  // 40% - 概率更高
+        icon: '🧸'
     },
     {
         detail: '零食 🍿',
-        icon: '🍿',
-        weight: 15  // 15%
+        icon: '🍿'
     }
 ];
+
+// 追踪是否为第一次抽奖
+let isFirstDraw = true;
 
 // 获取DOM元素
 const lotteryBtn = document.getElementById('lotteryBtn');
@@ -35,22 +33,18 @@ const resultTitle = document.getElementById('resultTitle');
 const prizeDetail = document.getElementById('prizeDetail');
 const retryBtn = document.getElementById('retryBtn');
 
-// 根据权重随机抽取奖品
+// 抽取奖品
 function drawPrize() {
-    // 计算总权重
-    const totalWeight = prizes.reduce((sum, prize) => sum + prize.weight, 0);
-    // 生成0到总权重之间的随机数
-    const random = Math.random() * totalWeight;
-
-    // 根据权重选择奖品
-    let cumulative = 0;
-    for (let i = 0; i < prizes.length; i++) {
-        cumulative += prizes[i].weight;
-        if (random < cumulative) {
-            return prizes[i];
-        }
+    // 第一次抽奖必定是玩偶
+    if (isFirstDraw) {
+        isFirstDraw = false;
+        // 找到玩偶奖品并返回
+        return prizes.find(prize => prize.detail.includes('玩偶'));
     }
-    return prizes[prizes.length - 1];
+
+    // 后续抽奖：所有奖品概率相等，随机抽取
+    const randomIndex = Math.floor(Math.random() * prizes.length);
+    return prizes[randomIndex];
 }
 
 // 创建五彩纸屑效果
