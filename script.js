@@ -1,34 +1,29 @@
-// 奖品配置
+// 奖品配置 - 玩偶概率更高
 const prizes = [
     {
-        level: '一等奖',
-        detail: '52元红包 🧧',
-        icon: '🎊',
-        probability: 0.05  // 5%
+        detail: '红包 🧧',
+        icon: '🧧',
+        weight: 15  // 15%
     },
     {
-        level: '二等奖',
-        detail: '自选官周报销（30元以内）💝',
-        icon: '🎁',
-        probability: 0.10  // 10%
+        detail: '手表 ⌚',
+        icon: '⌚',
+        weight: 15  // 15%
     },
     {
-        level: '三等奖',
-        detail: '小蛋糕一个 🍰',
-        icon: '🎂',
-        probability: 0.20  // 20%
+        detail: '拍立得 📷',
+        icon: '📷',
+        weight: 15  // 15%
     },
     {
-        level: '四等奖',
-        detail: '5.2元红包 🧧',
-        icon: '🎉',
-        probability: 0.30  // 30%
+        detail: '玩偶 🧸',
+        icon: '🧸',
+        weight: 40  // 40% - 概率更高
     },
     {
-        level: '五等奖',
-        detail: '0.52元红包 🧧',
-        icon: '🎈',
-        probability: 0.35  // 35%
+        detail: '零食 🍿',
+        icon: '🍿',
+        weight: 15  // 15%
     }
 ];
 
@@ -37,30 +32,31 @@ const lotteryBtn = document.getElementById('lotteryBtn');
 const resultModal = document.getElementById('resultModal');
 const resultIcon = document.getElementById('resultIcon');
 const resultTitle = document.getElementById('resultTitle');
-const prizeLevel = document.getElementById('prizeLevel');
 const prizeDetail = document.getElementById('prizeDetail');
 const retryBtn = document.getElementById('retryBtn');
 
-// 根据概率随机抽取奖品
+// 根据权重随机抽取奖品
 function drawPrize() {
-    const random = Math.random();
+    // 计算总权重
+    const totalWeight = prizes.reduce((sum, prize) => sum + prize.weight, 0);
+    // 生成0到总权重之间的随机数
+    const random = Math.random() * totalWeight;
+
+    // 根据权重选择奖品
     let cumulative = 0;
-    
     for (let i = 0; i < prizes.length; i++) {
-        cumulative += prizes[i].probability;
-        if (random <= cumulative) {
+        cumulative += prizes[i].weight;
+        if (random < cumulative) {
             return prizes[i];
         }
     }
-    
-    // 默认返回最后一个奖品
     return prizes[prizes.length - 1];
 }
 
 // 创建五彩纸屑效果
 function createConfetti() {
     const colors = ['#FF4D6D', '#FF6B8A', '#FFB6C1', '#FFC0CB', '#FF69B4', '#FFD700', '#87CEEB'];
-    
+
     for (let i = 0; i < 50; i++) {
         setTimeout(() => {
             const confetti = document.createElement('div');
@@ -70,9 +66,9 @@ function createConfetti() {
             confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
             confetti.style.transform = `rotate(${Math.random() * 360}deg)`;
             confetti.style.animationDuration = (2 + Math.random() * 2) + 's';
-            
+
             document.body.appendChild(confetti);
-            
+
             // 动画结束后移除元素
             setTimeout(() => {
                 confetti.remove();
@@ -85,9 +81,8 @@ function createConfetti() {
 function showResult(prize) {
     resultIcon.textContent = prize.icon;
     resultTitle.textContent = '恭喜你！';
-    prizeLevel.textContent = prize.level;
     prizeDetail.textContent = prize.detail;
-    
+
     resultModal.classList.add('show');
     createConfetti();
 }
@@ -102,12 +97,12 @@ lotteryBtn.addEventListener('click', () => {
     // 添加按钮动画
     lotteryBtn.classList.add('pulse');
     lotteryBtn.disabled = true;
-    
+
     // 延迟显示结果，增加悬念感
     setTimeout(() => {
         const prize = drawPrize();
         showResult(prize);
-        
+
         lotteryBtn.classList.remove('pulse');
         lotteryBtn.disabled = false;
     }, 800);
@@ -116,7 +111,7 @@ lotteryBtn.addEventListener('click', () => {
 // 再抽一次按钮点击事件
 retryBtn.addEventListener('click', () => {
     hideResult();
-    
+
     // 短暂延迟后自动再抽一次
     setTimeout(() => {
         lotteryBtn.click();
